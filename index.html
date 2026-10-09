@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Бюджетна система та принципи її побудови | Доповідь</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #064e3b;
+            --secondary: #065f46;
+            --accent: #d97706;
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --border-color: #e5e7eb;
+            --shadow: 0 12px 40px -10px rgba(6, 78, 59, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            background: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        /* ПАССИВНЫЕ ФОНОВЫЕ АНИМАЦИИ */
+        .page-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(217, 119, 6, 0.05) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(6, 78, 59, 0.06) 0%, transparent 45%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .glow-orb {
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            background: rgba(217, 119, 6, 0.04);
+            filter: blur(100px);
+            border-radius: 50%;
+            z-index: 0;
+            animation: floatOrb 14s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .glow-orb.orb-2 {
+            top: 50%;
+            left: 65%;
+            background: rgba(6, 78, 59, 0.05);
+            animation-duration: 18s;
+            animation-direction: alternate-reverse;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-60px) scale(1.2); }
+        }
+
+        /* АДАПТИВНЕ МЕНЮ НАВІГАЦІЇ */
+        nav {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(14px);
+            padding: 8px 12px;
+            border-radius: 100px;
+            z-index: 1000;
+            display: flex;
+            gap: 6px;
+            max-width: 94vw;
+            overflow-x: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        nav::-webkit-scrollbar { display: none; }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: clamp(10px, 2vw, 11px);
+            font-weight: 600;
+            text-transform: uppercase;
+            padding: 8px 18px;
+            border-radius: 100px;
+            transition: 0.3s;
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        nav a:hover, nav a.active {
+            color: #ffffff;
+            background: var(--primary);
+        }
+
+        /* СЕКЦІЇ ТА КОНТЕЙНЕРИ (ЗБІЛЬШЕНА ШИРИНА) */
+        section {
+            min-height: 100vh;
+            padding: 130px 20px 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .content-box {
+            width: 100%;
+            max-width: 1000px; /* Збільшено з 860px для кращого простору */
+            margin: 0 auto;
+        }
+
+        /* ЗАГОЛОВКИ */
+        h1 {
+            font-size: clamp(2.3rem, 5.5vw, 3.8rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            color: var(--primary);
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: clamp(1.5rem, 3.2vw, 2.3rem);
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--primary);
+            border-left: 4px solid var(--accent);
+            padding-left: 16px;
+            letter-spacing: -0.3px;
+        }
+
+        p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            color: var(--text-main);
+            margin-bottom: 20px;
+            text-align: justify;
+            font-weight: 400;
+        }
+
+        .accent-text {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* КАРТКИ КОНТЕНТУ */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 44px; /* Збільшені відступи для солідності */
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 18px 45px -10px rgba(6, 78, 59, 0.12);
+        }
+
+        /* ІНФО-БАР */
+        .interactive-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 24px;
+            background: rgba(217, 119, 6, 0.06);
+            border: 1px solid rgba(217, 119, 6, 0.15);
+            padding: 12px 20px;
+            border-radius: 14px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.8px;
+            color: var(--accent);
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px var(--accent);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.5); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(217, 119, 6, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(217, 119, 6, 0); }
+        }
+
+        /* СІТКА ФУНКЦІЙ (3 КОЛОНКИ ДЛЯ ПРИНЦИПІВ) */
+        .grid-blocks {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .block-item {
+            background: #fafafa;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 16px;
+            border-left: 3px solid var(--accent);
+            transition: 0.3s;
+        }
+
+        .block-item:hover {
+            background: #ffffff;
+            border-color: rgba(217, 119, 6, 0.35);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.04);
+            transform: translateY(-2px);
+        }
+
+        .block-item h4 {
+            font-size: 0.98rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .block-item p {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+            text-align: left;
+            color: var(--text-muted);
+        }
+
+        /* ФУТЕР */
+        footer {
+            padding: 35px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 11px;
+            letter-spacing: 1px;
+            border-top: 1px solid var(--border-color);
+            background: #ffffff;
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+        }
+
+        /* МОБІЛЬНА АДАПТАЦІЯ */
+        @media (max-width: 900px) {
+            .grid-blocks { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 650px) {
+            .grid-blocks { grid-template-columns: 1fr; }
+            .card { padding: 24px; border-radius: 18px; }
+            section { padding-top: 100px; padding-bottom: 40px; min-height: auto; }
+            nav { top: 12px; max-width: 96vw; padding: 6px 8px; }
+            nav a { padding: 6px 12px; font-size: 9px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="page-background"></div>
+    <div class="glow-orb"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <!-- НАВІГАЦІЯ -->
+    <nav>
+        <a href="#intro" class="nav-link active">Вступ</a>
+        <a href="#architecture" class="nav-link">Архітектура</a>
+        <a href="#principles" class="nav-link">Принципи</a>
+        <a href="#challenges" class="nav-link">Виклики</a>
+        <a href="#conclusion" class="nav-link">Висновок</a>
+    </nav>
+
+
+    <!-- 1. ВСТУП -->
+    <section id="intro">
+        <div class="content-box" data-aos="fade-up">
+            <div class="interactive-bar">
+                <span><span class="pulse-dot"></span> Публічні фінанси • Доповідь</span>
+                <span>Ігор Прайс • Група КБ-25-1</span>
+            </div>
+            <h1>Бюджетна система та <br><span class="accent-text">принципи її побудови</span></h1>
+
+            <div class="card">
+                <p>
+                    Ефективне функціонування будь-якої сучасної держави неможливе без централізованого акумулювання та перерозподілу фінансових ресурсів задля реалізації суспільних інтересів.
+                </p>
+                <p style="margin-bottom: 0;">
+                    Центральним елементом фінансової архітектури країни виступає бюджетна система, яка визначає порядок формування, розподілу та використання коштів для забезпечення сталого розвитку.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 2. АРХІТЕКТУРА БЮДЖЕТНОЇ СИСТЕМИ -->
+    <section id="architecture">
+        <div class="content-box">
+            <h2 data-aos="fade-up">Архітектура бюджетної системи</h2>
+
+            <div class="card" data-aos="fade-up">
+                <p>
+                    У законодавчому та теоретичному контексті бюджетна система є цілісною, законодавчо врегульованою сукупністю всіх самостійних бюджетів, що функціонують у межах держави. Вона базується на економічних відносинах і правових нормах, поєднуючи Державний бюджет України та місцеві бюджети.
+                </p>
+                <p style="margin-bottom: 0;">
+                    Усі ланки системи пов’язані між собою через механізми міжбюджетного регулювання — трансферти, субвенції та дотації, що дозволяє гармонійно поєднувати загальнодержавні пріоритети з фінансовою автономією регіонів.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 3. ПРИНЦИПИ ПОБУДОВИ -->
+    <section id="principles">
+        <div class="content-box">
+            <h2 data-aos="fade-up">Принципи побудови системи</h2>
+
+            <div class="card" data-aos="fade-up">
+                <p>
+                    Побудова та функціонування бюджетного процесу спирається на базові засади, закріплені в Бюджетному кодексі України:
+                </p>
+
+                <div class="grid-blocks">
+                    <div class="block-item">
+                        <h4>Принцип єдності</h4>
+                        <p>Забезпечується єдиною правовою базою, грошовою системою та формами документації.</p>
+                    </div>
+                    <div class="block-item">
+                        <h4>Принцип збалансованості</h4>
+                        <p>Вимагає мінімізації розриву між видатками й доходами та пошуку джерел покриття дефіциту.</p>
+                    </div>
+                    <div class="block-item">
+                        <h4>Принцип самостійності</h4>
+                        <p>Закріплює право кожного рівня влади самостійно формувати доходи й затверджувати витрати.</p>
+                    </div>
+                    <div class="block-item">
+                        <h4>Принцип субсидіарності</h4>
+                        <p>Розподіл видатків так, щоб послуги надавалися на рівні, найближчому до споживача.</p>
+                    </div>
+                    <div class="block-item">
+                        <h4>Принцип повноти</h4>
+                        <p>Відображення у бюджетах усіх без винятку фінансових надходжень і витрат держави.</p>
+                    </div>
+                    <div class="block-item">
+                        <h4>Принцип гласності</h4>
+                        <p>Обов'язкова відкрита публікація бюджетних показників та звітів для суспільства.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 4. ВИКЛИКИ ТА ТЕНДЕНЦІЇ -->
+    <section id="challenges">
+        <div class="content-box">
+            <h2 data-aos="fade-up">Виклики та цифровізація</h2>
+
+            <div class="card" data-aos="fade-up">
+                <p>
+                    Сьогодні бюджетна система України функціонує в умовах масштабних викликів, пов'язаних із забезпеченням національної стійкості, підтримкою оборони та економічною адаптацією.
+                </p>
+                <p style="margin-bottom: 0;">
+                    Ключовими тенденціями стають максимальна прозорість розподілу коштів, розвиток цифрових платформ управління публічними фінансами та гармонізація з європейськими стандартами підзвітності.
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- 5. ВИСНОВОК -->
+    <section id="conclusion">
+        <div class="content-box">
+            <h2 data-aos="fade-up">Висновки</h2>
+
+            <div class="card" data-aos="fade-up">
+                <p>
+                    Підсумовуючи, бюджетна система є фундаментальним інструментом державного регулювання та економічного зростання.
+                </p>
+                <p>
+                    Суворе дотримання принципів її побудови гарантує прозорість публічних фінансів, ефективний перерозподіл ресурсів та довіру суспільства до державних інститутів.
+                </p>
+                <p style="text-align: center; margin-top: 20px; font-weight: 600; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; font-size: 0.85rem;">
+                    Дякую за увагу • Ігор Прайс (2026)
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <footer>
+        Державний податковий університет • Група КБ-25-1
+    </footer>
+
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 700, once: true });
+
+        window.addEventListener("scroll", () => {
+            let current = "";
+            document.querySelectorAll("section").forEach(section => {
+                if (window.pageYOffset >= section.offsetTop - 250) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            document.querySelectorAll("nav a").forEach(link => {
+                link.classList.remove("active");
+                if (link.getAttribute("href").includes(current)) {
+                    link.classList.add("active");
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
